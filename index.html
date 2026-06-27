@@ -1,650 +1,835 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Happy Birthday Ama 🌸</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
-  <style>
-    /* =====================
-       TOKEN SYSTEM
-    ===================== */
-    :root {
-      --blush:        #f9c6d3;
-      --rose:         #e8789a;
-      --deep-rose:    #c0436b;
-      --petal:        #fff0f5;
-      --warm-white:   #fffafb;
-      --gold:         #d4a96a;
-      --charcoal:     #3a2030;
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Happy Birthday Ama 🌸</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+<style>
 
-      --font-display: 'Cormorant Garamond', Georgia, serif;
-      --font-body:    'Jost', 'Segoe UI', sans-serif;
+/* ═══════════════════════════════
+   TOKENS
+═══════════════════════════════ */
+:root {
+  --blush:     #f9c6d3;
+  --rose:      #e8789a;
+  --deep-rose: #c0436b;
+  --petal:     #fff0f5;
+  --gold:      #d4a96a;
+  --gold-lt:   #f0d5a0;
+  --charcoal:  #3a2030;
+  --font-d: 'Cormorant Garamond', Georgia, serif;
+  --font-b: 'Jost', 'Segoe UI', sans-serif;
+  --silk:  cubic-bezier(0.4, 0, 0.2, 1);
+  --bloom: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --expo:  cubic-bezier(0.87, 0, 0.13, 1);
+}
 
-      --ease-silk:  cubic-bezier(0.4, 0, 0.2, 1);
-      --ease-bloom: cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: #1a0a12;
+}
 
-    html, body {
-      width: 100%; height: 100%;
-      overflow: hidden;
-      background: var(--petal);
-    }
+/* ═══════════════════════════════
+   PETAL CANVAS
+═══════════════════════════════ */
+#petal-canvas {
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 9000;
+}
 
-    /* =====================
-       PETALS CANVAS
-    ===================== */
-    #petal-canvas {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1000;
-    }
+/* ═══════════════════════════════
+   TRANSITION OVERLAY
+═══════════════════════════════ */
+#transition-overlay {
+  position: fixed; inset: 0;
+  z-index: 8000;
+  pointer-events: none;
+  overflow: hidden;
+}
+.ripple-circle {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  pointer-events: none;
+}
+#curtain {
+  position: fixed; inset: 0;
+  z-index: 7500;
+  display: flex;
+  pointer-events: none;
+  overflow: hidden;
+}
+.curtain-panel {
+  flex: 1; height: 100%;
+  transform: scaleY(0);
+  transform-origin: top center;
+}
 
-    /* =====================
-       SLIDESHOW WRAPPER
-    ===================== */
-    .slides-wrapper {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      overflow: hidden;
-    }
+/* ═══════════════════════════════════════════════════
+   GIFT BOX SCREEN
+═══════════════════════════════════════════════════ */
+#gift-screen {
+  position: fixed; inset: 0;
+  z-index: 7000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0;
+  /* Deep luxurious gradient background */
+  background:
+    radial-gradient(ellipse 70% 60% at 30% 40%, rgba(192,67,107,0.22) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 75% 70%, rgba(212,169,106,0.14) 0%, transparent 55%),
+    linear-gradient(145deg, #1e0714 0%, #3d1228 50%, #0f060c 100%);
+  transition: opacity 0.6s var(--silk);
+}
 
-    .slide {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0s;
-    }
+/* Star dust in background */
+#gift-screen::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle 1px at 20% 30%, rgba(255,200,220,0.6) 0%, transparent 100%),
+    radial-gradient(circle 1px at 80% 20%, rgba(212,169,106,0.5) 0%, transparent 100%),
+    radial-gradient(circle 1.5px at 50% 60%, rgba(255,200,220,0.4) 0%, transparent 100%),
+    radial-gradient(circle 1px at 10% 80%, rgba(212,169,106,0.4) 0%, transparent 100%),
+    radial-gradient(circle 1px at 90% 70%, rgba(255,182,193,0.5) 0%, transparent 100%),
+    radial-gradient(circle 1.5px at 35% 15%, rgba(255,200,220,0.4) 0%, transparent 100%),
+    radial-gradient(circle 1px at 65% 85%, rgba(212,169,106,0.4) 0%, transparent 100%);
+  pointer-events: none;
+  animation: starTwinkle 4s ease-in-out infinite alternate;
+}
+@keyframes starTwinkle {
+  0%   { opacity: 0.5; }
+  100% { opacity: 1; }
+}
 
-    .slide.active {
-      opacity: 1;
-      pointer-events: all;
-    }
+/* "Untuk Ama" text above box */
+.gift-for-text {
+  font-family: var(--font-d);
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(1rem, 3vw, 1.4rem);
+  color: rgba(249,198,211,0.7);
+  letter-spacing: 0.12em;
+  margin-bottom: 2.2rem;
+  animation: fadeSlideDown 1s var(--bloom) 0.3s both;
+}
+@keyframes fadeSlideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-    /* slide-in from right */
-    .slide.entering {
-      animation: slideEnter 0.9s var(--ease-silk) forwards;
-    }
-    /* slide-out to left */
-    .slide.leaving {
-      animation: slideLeave 0.9s var(--ease-silk) forwards;
-    }
-    /* slide-in from left (back navigation) */
-    .slide.entering-back {
-      animation: slideEnterBack 0.9s var(--ease-silk) forwards;
-    }
-    .slide.leaving-forward {
-      animation: slideLeaveForward 0.9s var(--ease-silk) forwards;
-    }
+/* ── THE BOX WRAPPER ── */
+.gift-box-wrap {
+  position: relative;
+  cursor: pointer;
+  animation: boxFloat 3s ease-in-out infinite alternate, fadeSlideDown 0.9s var(--bloom) 0.5s both;
+  filter: drop-shadow(0 30px 60px rgba(192,67,107,0.45));
+  transition: filter 0.3s;
+}
+.gift-box-wrap:hover {
+  filter: drop-shadow(0 35px 70px rgba(192,67,107,0.65));
+}
+@keyframes boxFloat {
+  from { transform: translateY(0px); }
+  to   { transform: translateY(-14px); }
+}
 
-    @keyframes slideEnter {
-      from { transform: translateX(100%) scale(0.96); opacity: 0; }
-      to   { transform: translateX(0)    scale(1);    opacity: 1; }
-    }
-    @keyframes slideLeave {
-      from { transform: translateX(0)     scale(1);    opacity: 1; }
-      to   { transform: translateX(-100%) scale(0.96); opacity: 0; }
-    }
-    @keyframes slideEnterBack {
-      from { transform: translateX(-100%) scale(0.96); opacity: 0; }
-      to   { transform: translateX(0)     scale(1);    opacity: 1; }
-    }
-    @keyframes slideLeaveForward {
-      from { transform: translateX(0)    scale(1);    opacity: 1; }
-      to   { transform: translateX(100%) scale(0.96); opacity: 0; }
-    }
+/* ── BOX BASE ── */
+.gift-box {
+  position: relative;
+  width: clamp(190px, 40vw, 260px);
+  height: clamp(170px, 36vw, 230px);
+  border-radius: 8px 8px 14px 14px;
 
-    /* =====================
-       NAV DOTS
-    ===================== */
-    .nav-dots {
-      position: fixed;
-      bottom: 36px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 10px;
-      z-index: 500;
-    }
+  /* Pink-to-rose gradient */
+  background: linear-gradient(160deg, #e8789a 0%, #c0436b 60%, #9e2d52 100%);
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255,255,255,0.18),
+    0 8px 0 rgba(150,30,65,0.6),
+    0 16px 0 rgba(120,20,50,0.3);
 
-    .dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: rgba(192, 67, 107, 0.3);
-      cursor: pointer;
-      transition: all 0.4s var(--ease-silk);
-    }
-    .dot.active {
-      width: 28px;
-      border-radius: 4px;
-      background: var(--deep-rose);
-    }
+  overflow: hidden;
+}
 
-    /* =====================
-       NAV ARROWS
-    ===================== */
-    .nav-arrow {
-      position: fixed;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 500;
-      background: rgba(255,255,255,0.7);
-      border: 1.5px solid var(--blush);
-      color: var(--deep-rose);
-      font-size: 1.3rem;
-      width: 44px; height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      backdrop-filter: blur(6px);
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.3s var(--ease-silk);
-      user-select: none;
-    }
-    .nav-arrow:hover {
-      background: var(--deep-rose);
-      color: #fff;
-      border-color: var(--deep-rose);
-      transform: translateY(-50%) scale(1.08);
-    }
-    .nav-arrow.left  { left: 20px; }
-    .nav-arrow.right { right: 20px; }
+/* Shine sweep on box face */
+.gift-box::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(115deg,
+    transparent 30%,
+    rgba(255,255,255,0.12) 48%,
+    rgba(255,255,255,0.22) 52%,
+    transparent 70%);
+  animation: boxShine 3s ease-in-out infinite;
+}
+@keyframes boxShine {
+  0%   { transform: translateX(-100%) skewX(-10deg); }
+  60%  { transform: translateX(250%) skewX(-10deg); }
+  100% { transform: translateX(250%) skewX(-10deg); }
+}
 
-    /* =====================
-       SLIDE 1 — OPENING
-    ===================== */
-    .slide-1 {
-      background: linear-gradient(145deg, #fff0f5 0%, #ffe4ee 50%, #ffd6e8 100%);
-    }
+/* Vertical ribbon on box */
+.gift-box .ribbon-v {
+  position: absolute;
+  left: 50%; top: 0; bottom: 0;
+  width: clamp(22px, 5vw, 30px);
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, var(--gold-lt) 0%, var(--gold) 40%, #b8860b 100%);
+  box-shadow: 0 0 12px rgba(212,169,106,0.5);
+}
+.gift-box .ribbon-v::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg,
+    rgba(255,255,255,0.4) 0%,
+    rgba(255,255,255,0.1) 50%,
+    transparent 100%);
+}
 
-    .slide-1 .bg-circle {
-      position: absolute;
-      border-radius: 50%;
-      pointer-events: none;
-    }
-    .slide-1 .bg-circle.c1 {
-      width: 500px; height: 500px;
-      background: radial-gradient(circle, rgba(232,120,154,0.18) 0%, transparent 70%);
-      top: -100px; right: -80px;
-    }
-    .slide-1 .bg-circle.c2 {
-      width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(212,169,106,0.12) 0%, transparent 70%);
-      bottom: -100px; left: -80px;
-    }
+/* Dots pattern on box face */
+.gift-box .box-dots {
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle 2px, rgba(255,255,255,0.12) 0%, transparent 100%);
+  background-size: 28px 28px;
+}
 
-    .slide-1-content {
-      position: relative;
-      z-index: 10;
-      text-align: center;
-      padding: 2rem;
-      animation: bloomIn 1.2s var(--ease-bloom);
-    }
+/* ── LID ── */
+.gift-lid {
+  position: absolute;
+  bottom: 100%;
+  left: -8px; right: -8px;
+  height: clamp(52px, 11vw, 72px);
+  border-radius: 10px 10px 4px 4px;
 
-    .slide-1-content .subtitle {
-      font-family: var(--font-body);
-      font-weight: 200;
-      font-size: clamp(0.7rem, 2vw, 0.9rem);
-      letter-spacing: 0.35em;
-      text-transform: uppercase;
-      color: var(--rose);
-      margin-bottom: 1.6rem;
-    }
+  background: linear-gradient(160deg, #f48fb1 0%, #e0557a 55%, #c0436b 100%);
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255,255,255,0.2),
+    0 -4px 0 rgba(150,30,65,0.4);
+  transform-origin: center bottom;
+  transform: rotateX(0deg);
+  transition: transform 0.7s var(--expo), opacity 0.5s;
+  z-index: 5;
+  overflow: hidden;
+}
+.gift-lid::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(115deg,
+    transparent 30%,
+    rgba(255,255,255,0.15) 48%,
+    rgba(255,255,255,0.28) 52%,
+    transparent 70%);
+  animation: boxShine 3s ease-in-out infinite 0.3s;
+}
+/* Horizontal ribbon on lid */
+.gift-lid .ribbon-h {
+  position: absolute;
+  top: 50%; left: 0; right: 0;
+  height: clamp(22px, 5vw, 30px);
+  transform: translateY(-50%);
+  background: linear-gradient(90deg, var(--gold-lt) 0%, var(--gold) 40%, #b8860b 100%);
+  box-shadow: 0 0 10px rgba(212,169,106,0.5);
+}
+.gift-lid .ribbon-h::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.4) 0%,
+    rgba(255,255,255,0.1) 50%,
+    transparent 100%);
+}
+/* Vertical ribbon on lid */
+.gift-lid .ribbon-v2 {
+  position: absolute;
+  left: 50%; top: 0; bottom: 0;
+  width: clamp(22px, 5vw, 30px);
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, var(--gold-lt) 0%, var(--gold) 40%, #b8860b 100%);
+  box-shadow: 0 0 12px rgba(212,169,106,0.5);
+}
 
-    .slide-1-content h1 {
-      font-family: var(--font-display);
-      font-weight: 300;
-      font-size: clamp(3.5rem, 10vw, 7rem);
-      color: var(--charcoal);
-      line-height: 1.0;
-      margin-bottom: 0.4rem;
-    }
-    .slide-1-content h1 em {
-      font-style: italic;
-      color: var(--deep-rose);
-    }
+/* ── BOW ON TOP OF LID ── */
+.gift-bow {
+  position: absolute;
+  bottom: calc(100% + clamp(52px, 11vw, 72px) - 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  width: 0;
+}
 
-    .slide-1-content .big-name {
-      font-family: var(--font-display);
-      font-weight: 600;
-      font-size: clamp(4rem, 14vw, 9rem);
-      color: var(--deep-rose);
-      line-height: 1.0;
-      text-shadow: 0 4px 32px rgba(192,67,107,0.25);
-      letter-spacing: -0.02em;
-    }
+.bow-loop {
+  position: absolute;
+  width: clamp(36px, 8vw, 50px);
+  height: clamp(28px, 6vw, 38px);
+  border-radius: 50% 50% 0 50%;
+  background: linear-gradient(135deg, var(--gold-lt) 0%, var(--gold) 60%, #a06010 100%);
+  box-shadow: 0 2px 10px rgba(212,169,106,0.5);
+  top: clamp(-28px, -6vw, -38px);
+}
+.bow-loop.left  {
+  left: clamp(-48px, -10vw, -64px);
+  transform: rotate(-20deg);
+}
+.bow-loop.right {
+  left: clamp(12px, 2.5vw, 16px);
+  transform: rotate(20deg) scaleX(-1);
+}
+.bow-center {
+  position: absolute;
+  width: clamp(20px, 4.5vw, 28px);
+  height: clamp(20px, 4.5vw, 28px);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--gold-lt) 0%, var(--gold) 55%, #a06010 100%);
+  top: clamp(-24px, -5vw, -32px);
+  left: clamp(-10px, -2.2vw, -14px);
+  box-shadow: 0 2px 8px rgba(212,169,106,0.6);
+  z-index: 2;
+}
+/* Bow shine */
+.bow-loop::after {
+  content: '';
+  position: absolute;
+  width: 35%; height: 35%;
+  background: rgba(255,255,255,0.4);
+  border-radius: 50%;
+  top: 18%; left: 18%;
+}
 
-    .slide-1-content .date-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 1.8rem;
-      padding: 0.55rem 1.4rem;
-      border: 1px solid rgba(192,67,107,0.3);
-      border-radius: 100px;
-      font-family: var(--font-body);
-      font-weight: 300;
-      font-size: clamp(0.75rem, 2vw, 0.9rem);
-      letter-spacing: 0.12em;
-      color: var(--deep-rose);
-      background: rgba(255,255,255,0.6);
-      backdrop-filter: blur(8px);
-    }
-    .slide-1-content .date-badge span { color: var(--gold); }
+/* ── CLICK TEXT LABEL ── */
+.gift-label {
+  position: absolute;
+  bottom: clamp(-56px, -10vw, -72px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  text-align: center;
+  z-index: 10;
+}
+.gift-label-text {
+  display: inline-block;
+  font-family: var(--font-b);
+  font-weight: 300;
+  font-size: clamp(0.78rem, 2.2vw, 0.98rem);
+  letter-spacing: 0.08em;
+  color: rgba(249,198,211,0.9);
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(249,198,211,0.25);
+  backdrop-filter: blur(10px);
+  border-radius: 100px;
+  padding: 0.45rem 1.3rem;
+  animation: labelPulse 2s ease-in-out infinite;
+}
+.gift-label-text .arrow-icon {
+  display: inline-block;
+  animation: arrowBounce 1.2s ease-in-out infinite;
+  margin-left: 4px;
+}
+@keyframes labelPulse {
+  0%,100% { box-shadow: 0 0 0 rgba(249,198,211,0); border-color: rgba(249,198,211,0.25); }
+  50%      { box-shadow: 0 0 18px rgba(249,198,211,0.2); border-color: rgba(249,198,211,0.5); }
+}
+@keyframes arrowBounce {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(3px); }
+}
 
-    @keyframes bloomIn {
-      from { opacity: 0; transform: scale(0.85) translateY(30px); }
-      to   { opacity: 1; transform: scale(1)    translateY(0); }
-    }
+/* ── BURST PARTICLES ON CLICK ── */
+.burst-particle {
+  position: fixed;
+  pointer-events: none;
+  border-radius: 50%;
+  z-index: 8500;
+  animation: burstFly var(--dur) var(--ease) forwards;
+}
+@keyframes burstFly {
+  0%   { transform: translate(0,0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
 
-    /* =====================
-       SLIDE 2 — PHOTO
-    ===================== */
-    .slide-2 {
-      background: linear-gradient(160deg, #fce4ec 0%, #f8bbd0 40%, #f48fb1 100%);
-    }
+/* ── GIFT SCREEN EXIT ── */
+#gift-screen.opening .gift-lid {
+  transform: rotateX(-120deg) translateY(-20px);
+  opacity: 0.3;
+}
+#gift-screen.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
 
-    .slide-2-inner {
-      display: flex;
-      align-items: center;
-      gap: clamp(2rem, 6vw, 5rem);
-      max-width: 900px;
-      width: 90%;
-      padding: 2rem;
-    }
+/* ═══════════════════════════════
+   NAV CONTROLS (hidden initially)
+═══════════════════════════════ */
+#nav-ui {
+  opacity: 0;
+  transition: opacity 0.5s var(--silk) 0.3s;
+  pointer-events: none;
+}
+#nav-ui.visible {
+  opacity: 1;
+  pointer-events: all;
+}
 
-    /* ===================================================
-       🌸 PHOTO FRAME — MASUKKAN FOTO AMA DI SINI 🌸
-    =================================================== */
-    .photo-frame {
-      flex-shrink: 0;
-      width: clamp(180px, 30vw, 280px);
-      aspect-ratio: 3/4;
-      border-radius: 40% 60% 60% 40% / 50% 50% 50% 50%;
-      overflow: hidden;
-      border: 4px solid rgba(255,255,255,0.9);
-      box-shadow:
-        0 20px 60px rgba(192,67,107,0.35),
-        0 0 0 12px rgba(255,255,255,0.25);
-      position: relative;
-      animation: floatUp 3s ease-in-out infinite alternate;
-    }
+.nav-arrow {
+  position: fixed;
+  top: 50%; transform: translateY(-50%);
+  z-index: 6000;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.3s var(--silk);
+  user-select: none;
+}
+.nav-arrow:hover {
+  background: var(--deep-rose);
+  border-color: var(--deep-rose);
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 0 24px rgba(192,67,107,0.5);
+}
+.nav-arrow.left  { left: 22px; }
+.nav-arrow.right { right: 22px; }
+.nav-arrow svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-    .photo-frame img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center top;
-      display: block;
-    }
+.nav-dots {
+  position: fixed;
+  bottom: 30px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: 9px;
+  z-index: 6000;
+}
+.dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  cursor: pointer;
+  transition: all 0.4s var(--silk);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.dot.active {
+  width: 26px; border-radius: 4px;
+  background: #fff; border-color: #fff;
+}
 
-    /* Placeholder shown when no photo is set */
-    .photo-placeholder {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(160deg, #f8bbd0, #f48fb1);
-      color: rgba(255,255,255,0.9);
-      font-family: var(--font-body);
-      gap: 10px;
-      text-align: center;
-      padding: 1rem;
-    }
-    .photo-placeholder .icon { font-size: 3rem; }
-    .photo-placeholder p { font-size: 0.75rem; font-weight: 300; letter-spacing: 0.05em; }
+.slide-counter {
+  position: fixed;
+  top: 28px; right: 28px;
+  z-index: 6000;
+  font-family: var(--font-b);
+  font-weight: 200;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  color: rgba(255,255,255,0.5);
+}
+.slide-counter .cur { color: rgba(255,255,255,0.9); font-weight: 400; }
 
-    @keyframes floatUp {
-      from { transform: translateY(0px) rotate(-1deg); }
-      to   { transform: translateY(-14px) rotate(1deg); }
-    }
+/* ═══════════════════════════════
+   SLIDES WRAPPER
+═══════════════════════════════ */
+.slides-wrapper {
+  position: relative;
+  width: 100%; height: 100vh;
+  overflow: hidden;
+}
+.slide {
+  position: absolute; inset: 0;
+  display: flex;
+  align-items: center; justify-content: center;
+  visibility: hidden;
+  z-index: 1;
+}
+.slide.active {
+  visibility: visible;
+  z-index: 2;
+}
+.slide.active .stagger > * {
+  animation: staggerFadeUp 0.7s var(--bloom) both;
+}
+.slide.active .stagger > *:nth-child(1) { animation-delay: 0.35s; }
+.slide.active .stagger > *:nth-child(2) { animation-delay: 0.48s; }
+.slide.active .stagger > *:nth-child(3) { animation-delay: 0.60s; }
+.slide.active .stagger > *:nth-child(4) { animation-delay: 0.72s; }
+.slide.active .stagger > *:nth-child(5) { animation-delay: 0.84s; }
+.slide.active .stagger > *:nth-child(6) { animation-delay: 0.94s; }
+@keyframes staggerFadeUp {
+  from { opacity: 0; transform: translateY(28px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
 
-    .slide-2-text {
-      flex: 1;
-      color: var(--charcoal);
-    }
-    .slide-2-text .eyebrow {
-      font-family: var(--font-body);
-      font-weight: 200;
-      letter-spacing: 0.3em;
-      font-size: clamp(0.65rem, 1.8vw, 0.8rem);
-      text-transform: uppercase;
-      color: var(--deep-rose);
-      margin-bottom: 0.9rem;
-    }
-    .slide-2-text h2 {
-      font-family: var(--font-display);
-      font-weight: 300;
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      color: var(--charcoal);
-      line-height: 1.1;
-      margin-bottom: 1.2rem;
-    }
-    .slide-2-text h2 em {
-      font-style: italic;
-      color: var(--deep-rose);
-    }
-    .slide-2-text p {
-      font-family: var(--font-body);
-      font-weight: 300;
-      font-size: clamp(0.9rem, 2vw, 1.05rem);
-      line-height: 1.75;
-      color: #5a3545;
-    }
-    .slide-2-text .gold-line {
-      width: 50px; height: 1.5px;
-      background: var(--gold);
-      margin: 1.2rem 0;
-    }
+/* ═══════════════════════════════
+   SLIDE 1 — OPENING
+═══════════════════════════════ */
+.slide-1 {
+  background:
+    radial-gradient(ellipse 80% 60% at 70% 30%, rgba(232,120,154,0.25) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 20% 80%, rgba(212,169,106,0.15) 0%, transparent 55%),
+    linear-gradient(145deg, #fff0f5 0%, #ffe4ee 55%, #ffd0e4 100%);
+}
+.deco-ring {
+  position: absolute; border-radius: 50%;
+  border: 1px solid rgba(192,67,107,0.12);
+  pointer-events: none;
+  animation: rotateSlow 40s linear infinite;
+}
+.deco-ring.r1 { width: 500px; height: 500px; top: -180px; right: -120px; }
+.deco-ring.r2 { width: 320px; height: 320px; bottom: -100px; left: -80px; animation-direction: reverse; animation-duration: 28s; }
+@keyframes rotateSlow { to { transform: rotate(360deg); } }
 
-    /* =====================
-       SLIDE 3 — WISHES
-    ===================== */
-    .slide-3 {
-      background: linear-gradient(145deg, #2a0f1f 0%, #4a1530 50%, #6b1f42 100%);
-    }
+.s1-content { position: relative; z-index: 5; text-align: center; padding: 2rem; }
+.s1-eyebrow {
+  font-family: var(--font-b); font-weight: 200;
+  font-size: clamp(0.65rem, 1.8vw, 0.82rem);
+  letter-spacing: 0.42em; text-transform: uppercase;
+  color: var(--rose); margin-bottom: 1.8rem;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+}
+.s1-eyebrow::before, .s1-eyebrow::after {
+  content: ''; width: 32px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--rose));
+}
+.s1-eyebrow::after { background: linear-gradient(90deg, var(--rose), transparent); }
 
-    .slide-3::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 60% 50% at 20% 80%, rgba(232,120,154,0.15) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 80% 20%, rgba(212,169,106,0.12) 0%, transparent 55%);
-    }
+.s1-heading {
+  font-family: var(--font-d); font-weight: 300;
+  font-size: clamp(3.2rem, 9vw, 6.5rem);
+  color: var(--charcoal); line-height: 1.0; margin-bottom: 0.2rem;
+}
+.s1-heading em { font-style: italic; color: var(--deep-rose); }
 
-    .slide-3-inner {
-      position: relative;
-      z-index: 2;
-      max-width: 680px;
-      width: 90%;
-      text-align: center;
-      padding: 2rem;
-    }
+.s1-name {
+  font-family: var(--font-d); font-weight: 600;
+  font-size: clamp(5rem, 16vw, 10rem);
+  color: var(--deep-rose); line-height: 0.9;
+  letter-spacing: -0.03em;
+  text-shadow: 0 2px 0 rgba(192,67,107,0.2), 0 6px 40px rgba(192,67,107,0.18);
+  position: relative;
+}
+.s1-name::after {
+  content: 'Ama'; position: absolute; inset: 0;
+  background: linear-gradient(100deg, transparent 25%, rgba(255,255,255,0.55) 50%, transparent 75%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: shimmer 3.5s ease-in-out infinite 2s;
+}
+@keyframes shimmer {
+  0%  { background-position: -100% 0; }
+  60% { background-position: 200% 0; }
+  100%{ background-position: 200% 0; }
+}
 
-    .slide-3-inner .roman-num {
-      font-family: var(--font-display);
-      font-weight: 300;
-      font-style: italic;
-      font-size: clamp(4rem, 12vw, 7rem);
-      color: rgba(212,169,106,0.2);
-      line-height: 1;
-      margin-bottom: -0.8rem;
-      user-select: none;
-    }
+.s1-badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  margin-top: 2rem; padding: 0.6rem 1.6rem;
+  border: 1px solid rgba(192,67,107,0.25); border-radius: 100px;
+  font-family: var(--font-b); font-weight: 300;
+  font-size: clamp(0.7rem, 1.8vw, 0.85rem); letter-spacing: 0.1em;
+  color: var(--deep-rose);
+  background: rgba(255,255,255,0.65); backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px rgba(192,67,107,0.1);
+}
 
-    .slide-3-inner blockquote {
-      font-family: var(--font-display);
-      font-weight: 300;
-      font-style: italic;
-      font-size: clamp(1.4rem, 3.5vw, 2.2rem);
-      color: var(--warm-white);
-      line-height: 1.5;
-      margin: 0 0 1.5rem;
-    }
-    .slide-3-inner blockquote strong {
-      font-weight: 600;
-      color: var(--blush);
-      font-style: normal;
-    }
+/* ═══════════════════════════════
+   SLIDE 2 — PHOTO
+═══════════════════════════════ */
+.slide-2 {
+  background: linear-gradient(150deg, #fce4ec 0%, #f8bbd0 45%, #f48fb1 100%);
+  overflow: hidden;
+}
+.slide-2::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(circle 200px at 10% 20%, rgba(255,255,255,0.35) 0%, transparent 70%),
+    radial-gradient(circle 150px at 90% 80%, rgba(255,255,255,0.2) 0%, transparent 70%);
+}
+.s2-inner {
+  position: relative; z-index: 2;
+  display: flex; align-items: center;
+  gap: clamp(2rem, 6vw, 5rem);
+  max-width: 880px; width: 90%;
+}
 
-    .wishes-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-    .wishes-list li {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-family: var(--font-body);
-      font-weight: 300;
-      font-size: clamp(0.85rem, 2vw, 1rem);
-      color: rgba(255,240,245,0.85);
-      text-align: left;
-    }
-    .wishes-list li::before {
-      content: '✦';
-      color: var(--gold);
-      font-size: 0.65rem;
-      flex-shrink: 0;
-    }
+/* ══════════════════════════════════════
+   📸 FOTO AMA — MASUKKAN DI SINI
+   Ganti src="ama.png" dengan nama fotomu
+   Simpan foto di folder yang SAMA dengan
+   file index.html ini!
+══════════════════════════════════════ */
+.photo-wrap { flex-shrink: 0; position: relative; width: clamp(170px, 28vw, 260px); }
+.photo-frame {
+  width: 100%; aspect-ratio: 3/4;
+  border-radius: 44% 56% 58% 42% / 52% 48% 52% 48%;
+  overflow: hidden;
+  border: 3px solid rgba(255,255,255,0.95);
+  box-shadow: 0 0 0 10px rgba(255,255,255,0.2), 0 24px 70px rgba(192,67,107,0.35);
+  animation: floatPhoto 4s ease-in-out infinite alternate;
+}
+.photo-frame img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+.photo-placeholder {
+  width: 100%; height: 100%; display: none;
+  flex-direction: column; align-items: center; justify-content: center;
+  background: linear-gradient(160deg, #f8bbd0, #f06292);
+  color: rgba(255,255,255,0.92); gap: 10px; text-align: center; padding: 1.2rem;
+}
+.photo-placeholder .pi { font-size: 2.8rem; }
+.photo-placeholder p { font-size: 0.7rem; font-weight: 300; line-height: 1.6; letter-spacing: 0.04em; }
+.photo-placeholder strong { display: block; margin-top: 6px; font-size: 0.8rem; }
+.photo-wrap::before {
+  content: ''; position: absolute;
+  width: 60px; height: 60px; bottom: -12px; right: -12px;
+  border-right: 2px solid rgba(212,169,106,0.6);
+  border-bottom: 2px solid rgba(212,169,106,0.6);
+  border-radius: 0 0 12px 0;
+}
+@keyframes floatPhoto {
+  from { transform: translateY(0) rotate(-1.5deg); }
+  to   { transform: translateY(-16px) rotate(1.5deg); }
+}
 
-    /* =====================
-       SLIDE 4 — AGE TRIBUTE
-    ===================== */
-    .slide-4 {
-      background: linear-gradient(145deg, #fff0f5 0%, #ffd6e8 60%, #ffbdd6 100%);
-      overflow: hidden;
-    }
+.s2-text { flex: 1; }
+.s2-eyebrow {
+  font-family: var(--font-b); font-weight: 200;
+  font-size: clamp(0.62rem, 1.6vw, 0.76rem); letter-spacing: 0.35em;
+  text-transform: uppercase; color: var(--deep-rose); margin-bottom: 1rem;
+}
+.s2-text h2 {
+  font-family: var(--font-d); font-weight: 300;
+  font-size: clamp(2.2rem, 5.5vw, 3.8rem); color: var(--charcoal);
+  line-height: 1.05; margin-bottom: 1rem;
+}
+.s2-text h2 em { font-style: italic; color: var(--deep-rose); }
+.gold-rule { width: 48px; height: 1.5px; background: linear-gradient(90deg, var(--gold), transparent); margin: 1.2rem 0; }
+.s2-text p { font-family: var(--font-b); font-weight: 300; font-size: clamp(0.88rem, 1.9vw, 1.02rem); line-height: 1.82; color: #5a3040; }
 
-    .slide-4-inner {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      max-width: 720px;
-      width: 90%;
-      padding: 2rem;
-    }
+/* ═══════════════════════════════
+   SLIDE 3 — WISHES
+═══════════════════════════════ */
+.slide-3 { background: linear-gradient(145deg, #1e0714 0%, #3d1228 50%, #5c1b3a 100%); }
+.slide-3::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 55% 45% at 15% 85%, rgba(232,120,154,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 40% at 85% 15%, rgba(212,169,106,0.12) 0%, transparent 55%);
+}
+.s3-particles { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.s3-particle {
+  position: absolute; width: 2px; height: 2px;
+  border-radius: 50%; background: rgba(249,198,211,0.4);
+  animation: particleFloat linear infinite;
+}
+@keyframes particleFloat {
+  0%   { transform: translateY(0) scale(1); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 0.6; }
+  100% { transform: translateY(-100vh) scale(0.5); opacity: 0; }
+}
+.s3-inner { position: relative; z-index: 3; max-width: 680px; width: 90%; text-align: center; padding: 2rem; }
+.s3-title-large {
+  font-family: var(--font-d); font-weight: 300; font-style: italic;
+  font-size: clamp(3rem, 10vw, 6rem); color: rgba(249,198,211,0.15);
+  line-height: 1; margin-bottom: -0.6rem; user-select: none;
+}
+.s3-quote {
+  font-family: var(--font-d); font-weight: 300; font-style: italic;
+  font-size: clamp(1.25rem, 3.2vw, 2rem); color: rgba(255,240,245,0.92);
+  line-height: 1.55; margin: 0 0 1.8rem;
+  padding: 1.4rem 0;
+  border-top: 1px solid rgba(249,198,211,0.2);
+  border-bottom: 1px solid rgba(249,198,211,0.2);
+}
+.s3-quote strong { font-weight: 600; font-style: normal; color: var(--blush); }
+.wishes-list { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; text-align: left; }
+.wishes-list li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-family: var(--font-b); font-weight: 300;
+  font-size: clamp(0.82rem, 1.85vw, 0.97rem); color: rgba(255,232,240,0.82); line-height: 1.6;
+  padding: 0.55rem 0.9rem; border-radius: 8px;
+  background: rgba(255,255,255,0.04); backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.05); transition: background 0.3s;
+}
+.wishes-list li:hover { background: rgba(255,255,255,0.08); }
+.wish-icon { color: var(--gold); font-size: 0.85rem; margin-top: 0.15rem; flex-shrink: 0; }
 
-    .age-ring {
-      position: relative;
-      width: clamp(160px, 30vw, 220px);
-      height: clamp(160px, 30vw, 220px);
-      margin: 0 auto 2rem;
-    }
+/* ═══════════════════════════════
+   SLIDE 4 — AGE TRIBUTE
+═══════════════════════════════ */
+.slide-4 { background: linear-gradient(145deg, #fff0f5 0%, #ffd6e8 60%, #ffbdd6 100%); overflow: hidden; }
+.slide-4::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle 300px at 85% 15%, rgba(255,255,255,0.7) 0%, transparent 60%);
+}
+.s4-inner { position: relative; z-index: 2; text-align: center; max-width: 700px; width: 90%; padding: 2rem; }
+.age-orbit { position: relative; width: clamp(160px, 28vw, 210px); height: clamp(160px, 28vw, 210px); margin: 0 auto 2rem; }
+.age-orbit svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring-track { fill: none; stroke: rgba(192,67,107,0.1); stroke-width: 6; }
+.ring-glow  { fill: none; stroke: rgba(192,67,107,0.06); stroke-width: 14; }
+.ring-fill  { fill: none; stroke: url(#rg); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 0 999; transition: stroke-dasharray 2.2s var(--expo) 0.4s; filter: drop-shadow(0 0 6px rgba(192,67,107,0.6)); }
+.age-center-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.age-num { font-family: var(--font-d); font-weight: 600; font-size: clamp(3.5rem, 9vw, 5.5rem); color: var(--deep-rose); line-height: 1; }
+.age-unit { font-family: var(--font-b); font-weight: 200; font-size: clamp(0.58rem, 1.4vw, 0.7rem); letter-spacing: 0.28em; text-transform: uppercase; color: var(--rose); margin-top: 2px; }
+.s4-inner h2 { font-family: var(--font-d); font-weight: 300; font-size: clamp(1.9rem, 4.8vw, 3rem); color: var(--charcoal); line-height: 1.2; margin-bottom: 1rem; }
+.s4-inner h2 em { font-style: italic; color: var(--deep-rose); }
+.s4-inner p { font-family: var(--font-b); font-weight: 300; font-size: clamp(0.88rem, 1.9vw, 1.02rem); line-height: 1.82; color: #5a3040; max-width: 500px; margin: 0 auto; }
+.s4-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: 1.5rem; }
+.chip { padding: 0.3rem 0.9rem; background: rgba(192,67,107,0.1); border: 1px solid rgba(192,67,107,0.2); border-radius: 100px; font-family: var(--font-b); font-size: 0.75rem; font-weight: 300; color: var(--deep-rose); letter-spacing: 0.06em; }
 
-    .age-ring svg {
-      position: absolute;
-      inset: 0;
-      width: 100%; height: 100%;
-      transform: rotate(-90deg);
-    }
+/* ═══════════════════════════════
+   SLIDE 5 — CLOSING
+═══════════════════════════════ */
+.slide-5 { background: linear-gradient(145deg, #b0395f 0%, #8c2649 40%, #6a1535 100%); overflow: hidden; }
+.s5-glow { position: absolute; border-radius: 50%; pointer-events: none; }
+.s5-glow.g1 { width: 600px; height: 600px; top: -200px; left: -150px; background: radial-gradient(circle, rgba(255,160,185,0.12) 0%, transparent 65%); }
+.s5-glow.g2 { width: 500px; height: 500px; bottom: -180px; right: -120px; background: radial-gradient(circle, rgba(212,169,106,0.12) 0%, transparent 65%); }
+.rose-float { position: absolute; font-size: 1.5rem; opacity: 0; animation: roseFloat linear infinite; pointer-events: none; }
+@keyframes roseFloat {
+  0%   { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  5%   { opacity: 0.6; } 95% { opacity: 0.4; }
+  100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+}
+.s5-inner { position: relative; z-index: 4; text-align: center; max-width: 620px; width: 90%; padding: 2rem; }
+.heart-ring { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 90px; height: 90px; margin-bottom: 1.8rem; }
+.heart-ring::before {
+  content: ''; position: absolute; inset: 0; border-radius: 50%;
+  border: 1.5px solid rgba(255,200,220,0.3);
+  animation: ringPulse 2s ease-out infinite;
+}
+.heart-ring::after {
+  content: ''; position: absolute; inset: -12px; border-radius: 50%;
+  border: 1px solid rgba(255,200,220,0.15);
+  animation: ringPulse 2s ease-out infinite 0.4s;
+}
+@keyframes ringPulse {
+  0%   { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+.heart-emoji { font-size: 3.4rem; animation: heartBeat 1.5s ease-in-out infinite; filter: drop-shadow(0 0 24px rgba(255,140,170,0.8)); display: block; }
+@keyframes heartBeat {
+  0%,100% { transform: scale(1); } 14% { transform: scale(1.2); }
+  28% { transform: scale(1.05); } 42% { transform: scale(1.18); }
+}
+.s5-inner h2 { font-family: var(--font-d); font-weight: 300; font-style: italic; font-size: clamp(2rem, 5.5vw, 3.8rem); color: #fff; line-height: 1.2; margin-bottom: 1.4rem; }
+.s5-inner h2 strong { font-weight: 600; font-style: normal; color: var(--blush); }
+.s5-inner p { font-family: var(--font-b); font-weight: 300; font-size: clamp(0.88rem, 1.9vw, 1.02rem); line-height: 1.85; color: rgba(255,235,245,0.85); margin-bottom: 2.2rem; }
+.s5-divider { width: 60px; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,200,220,0.5), transparent); margin: 0 auto 1.8rem; }
+.sender-tag { font-family: var(--font-b); font-weight: 200; font-size: clamp(0.68rem, 1.6vw, 0.8rem); letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255,210,225,0.65); }
+.sender-tag em { font-style: italic; color: rgba(255,240,248,0.9); letter-spacing: 0.05em; }
 
-    .age-ring .age-track {
-      fill: none;
-      stroke: rgba(192,67,107,0.12);
-      stroke-width: 8;
-    }
-    .age-ring .age-fill {
-      fill: none;
-      stroke: url(#ringGrad);
-      stroke-width: 8;
-      stroke-linecap: round;
-      stroke-dasharray: 0;
-      transition: stroke-dasharray 2s var(--ease-silk) 0.3s;
-    }
-
-    .age-center {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    .age-center .num {
-      font-family: var(--font-display);
-      font-weight: 600;
-      font-size: clamp(3rem, 8vw, 5rem);
-      color: var(--deep-rose);
-      line-height: 1;
-    }
-    .age-center .label {
-      font-family: var(--font-body);
-      font-weight: 200;
-      font-size: clamp(0.6rem, 1.5vw, 0.75rem);
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--rose);
-    }
-
-    .slide-4-inner h2 {
-      font-family: var(--font-display);
-      font-weight: 300;
-      font-size: clamp(2rem, 5vw, 3.2rem);
-      color: var(--charcoal);
-      line-height: 1.2;
-      margin-bottom: 1rem;
-    }
-    .slide-4-inner h2 em {
-      font-style: italic;
-      color: var(--deep-rose);
-    }
-    .slide-4-inner p {
-      font-family: var(--font-body);
-      font-weight: 300;
-      font-size: clamp(0.9rem, 2vw, 1.05rem);
-      line-height: 1.75;
-      color: #5a3545;
-      max-width: 520px;
-      margin: 0 auto;
-    }
-
-    /* =====================
-       SLIDE 5 — CLOSING
-    ===================== */
-    .slide-5 {
-      background: linear-gradient(145deg, #c0436b 0%, #a0325a 40%, #7a1f3e 100%);
-    }
-
-    .slide-5::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 70% 60% at 50% 100%, rgba(255,200,220,0.12) 0%, transparent 60%);
-    }
-
-    .slide-5-inner {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      max-width: 640px;
-      width: 90%;
-      padding: 2rem;
-    }
-
-    .heart-anim {
-      font-size: clamp(3.5rem, 8vw, 5rem);
-      display: block;
-      margin-bottom: 1.5rem;
-      animation: heartPulse 1.4s ease-in-out infinite;
-      filter: drop-shadow(0 0 30px rgba(255,150,180,0.7));
-    }
-
-    @keyframes heartPulse {
-      0%,100% { transform: scale(1); }
-      15%      { transform: scale(1.18); }
-      30%      { transform: scale(1.05); }
-      45%      { transform: scale(1.15); }
-    }
-
-    .slide-5-inner h2 {
-      font-family: var(--font-display);
-      font-weight: 300;
-      font-style: italic;
-      font-size: clamp(2rem, 5.5vw, 3.8rem);
-      color: #fff;
-      line-height: 1.2;
-      margin-bottom: 1.2rem;
-    }
-    .slide-5-inner h2 strong {
-      font-weight: 600;
-      font-style: normal;
-      color: var(--blush);
-    }
-
-    .slide-5-inner p {
-      font-family: var(--font-body);
-      font-weight: 300;
-      font-size: clamp(0.9rem, 2vw, 1.05rem);
-      line-height: 1.8;
-      color: rgba(255,240,245,0.88);
-      margin-bottom: 2rem;
-    }
-
-    .sender-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-family: var(--font-body);
-      font-weight: 300;
-      font-size: clamp(0.7rem, 1.8vw, 0.85rem);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: rgba(255,220,230,0.7);
-      border-top: 1px solid rgba(255,255,255,0.2);
-      padding-top: 1.5rem;
-    }
-    .sender-tag em { font-style: italic; color: #fff; letter-spacing: 0.05em; }
-
-    /* =====================
-       REDUCED MOTION
-    ===================== */
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-    }
-
-    /* =====================
-       MOBILE
-    ===================== */
-    @media (max-width: 600px) {
-      .slide-2-inner {
-        flex-direction: column;
-        gap: 1.5rem;
-        text-align: center;
-      }
-      .slide-2-text .gold-line { margin: 1rem auto; }
-      .slide-2-text p { font-size: 0.9rem; }
-      .nav-arrow { width: 36px; height: 36px; font-size: 1rem; }
-    }
-  </style>
+/* ═══════════════════════════════
+   RESPONSIVE
+═══════════════════════════════ */
+@media (max-width: 600px) {
+  .s2-inner { flex-direction: column; gap: 1.5rem; text-align: center; }
+  .gold-rule { margin: 1rem auto; }
+  .nav-arrow { width: 40px; height: 40px; }
+  .nav-arrow.left  { left: 10px; }
+  .nav-arrow.right { right: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
 </head>
 <body>
 
+<!-- Petals -->
 <canvas id="petal-canvas"></canvas>
 
-<!-- ========================
-     NAVIGATION
-======================== -->
-<button class="nav-arrow left"  id="prev" aria-label="Sebelumnya">&#8592;</button>
-<button class="nav-arrow right" id="next" aria-label="Berikutnya">&#8594;</button>
+<!-- Transition layers -->
+<div id="transition-overlay"></div>
+<div id="curtain">
+  <div class="curtain-panel" id="cp1"></div>
+  <div class="curtain-panel" id="cp2"></div>
+  <div class="curtain-panel" id="cp3"></div>
+</div>
 
-<nav class="nav-dots" aria-label="Slide navigation">
-  <div class="dot active" data-i="0" role="button" tabindex="0"></div>
-  <div class="dot"        data-i="1" role="button" tabindex="0"></div>
-  <div class="dot"        data-i="2" role="button" tabindex="0"></div>
-  <div class="dot"        data-i="3" role="button" tabindex="0"></div>
-  <div class="dot"        data-i="4" role="button" tabindex="0"></div>
-</nav>
+<!-- ════════════════════════════════════
+     🎁 GIFT BOX SCREEN
+════════════════════════════════════ -->
+<div id="gift-screen">
 
-<!-- ========================
+  <p class="gift-for-text">✦ &nbsp; Sebuah hadiah untukmu &nbsp; ✦</p>
+
+  <div class="gift-box-wrap" id="giftBoxWrap">
+
+    <!-- Bow (sits above lid) -->
+    <div class="gift-bow">
+      <div class="bow-loop left"></div>
+      <div class="bow-loop right"></div>
+      <div class="bow-center"></div>
+    </div>
+
+    <!-- Box body (lid is a child, positioned above) -->
+    <div class="gift-box" id="giftBox">
+      <!-- Lid -->
+      <div class="gift-lid" id="giftLid">
+        <div class="ribbon-h"></div>
+        <div class="ribbon-v2"></div>
+      </div>
+
+      <!-- Box details -->
+      <div class="box-dots"></div>
+      <div class="ribbon-v"></div>
+    </div>
+
+    <!-- Click label -->
+    <div class="gift-label">
+      <span class="gift-label-text">
+        Klik ini, ada sesuatu! <span class="arrow-icon">🎁</span>
+      </span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════════
+     NAV UI (hidden until gift opened)
+════════════════════════════════════ -->
+<div id="nav-ui">
+  <button class="nav-arrow left"  id="prev" aria-label="Sebelumnya">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <button class="nav-arrow right" id="next" aria-label="Berikutnya">
+    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+  <nav class="nav-dots">
+    <div class="dot active" data-i="0" role="button" tabindex="0"></div>
+    <div class="dot"        data-i="1" role="button" tabindex="0"></div>
+    <div class="dot"        data-i="2" role="button" tabindex="0"></div>
+    <div class="dot"        data-i="3" role="button" tabindex="0"></div>
+    <div class="dot"        data-i="4" role="button" tabindex="0"></div>
+  </nav>
+  <div class="slide-counter">
+    <span class="cur" id="ctr-cur">01</span>
+    <span style="opacity:0.35"> / </span>05
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
      SLIDES
-======================== -->
+════════════════════════════════════ -->
 <div class="slides-wrapper">
 
-  <!-- SLIDE 1 — OPENING -->
+  <!-- SLIDE 1 -->
   <section class="slide slide-1 active" data-index="0">
-    <div class="bg-circle c1"></div>
-    <div class="bg-circle c2"></div>
-    <div class="slide-1-content">
-      <p class="subtitle">✦ &nbsp; Hari Istimewamu &nbsp; ✦</p>
-      <h1><em>Selamat</em><br>Ulang Tahun</h1>
-      <p class="big-name">Ama</p>
-      <div class="date-badge">
+    <div class="deco-ring r1"></div>
+    <div class="deco-ring r2"></div>
+    <div class="s1-content stagger">
+      <p class="s1-eyebrow">Hari Istimewamu</p>
+      <h1 class="s1-heading"><em>Selamat</em> Ulang Tahun</h1>
+      <p class="s1-name">Ama</p>
+      <div class="s1-badge">
         <span>🌸</span>
         29 Juni 1982 &nbsp;·&nbsp; <strong>44 Tahun Penuh Cinta</strong>
         <span>🌸</span>
@@ -654,255 +839,424 @@
 
   <!-- SLIDE 2 — PHOTO -->
   <section class="slide slide-2" data-index="1">
-    <div class="slide-2-inner">
-
-      <!-- =======================================================
-           📸 MASUKKAN FOTO AMA DI SINI
-           Ganti teks  src="foto-ama.jpg"  dengan nama file foto
-           Simpan file foto di folder yang sama dengan index.html
-           Contoh: src="ama.jpg"  atau  src="foto/ama.png"
-      ======================================================= -->
-      <div class="photo-frame">
-        <img
-          src="foto-ama.jpg"
-          alt="Foto Ama"
-          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-        />
-        <div class="photo-placeholder" style="display:none;">
-          <span class="icon">🌸</span>
-          <p>Masukkan foto Ama<br>dengan nama file:<br><strong>foto-ama.jpg</strong></p>
+    <div class="s2-inner stagger">
+      <!-- ══════════════════════════════════════
+           📸 LETAK FOTO AMA — GANTI DI SINI
+           Simpan foto di folder yang sama dengan
+           index.html, beri nama: ama.png
+      ══════════════════════════════════════ -->
+      <div class="photo-wrap">
+        <div class="photo-frame">
+          <img
+            src="ama.png"
+            alt="Foto Ama"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+          />
+          <div class="photo-placeholder">
+            <span class="pi">🌸</span>
+            <p>Taruh foto Ama<br>di folder ini, beri nama:<br><strong>ama.png</strong></p>
+          </div>
         </div>
       </div>
-      <!-- ======================================================= -->
-
-      <div class="slide-2-text">
-        <p class="eyebrow">Perempuan Luar Biasa</p>
+      <div class="s2-text">
+        <p class="s2-eyebrow">Perempuan Luar Biasa</p>
         <h2>Cantikmu<br>tak pernah<br><em>pudar</em></h2>
-        <div class="gold-line"></div>
-        <p>
-          Ama, ada keindahan dalam dirimu yang tidak bisa diukur oleh waktu.
-          Setiap senyummu adalah cahaya, setiap langkahmu adalah inspirasi.
-          Hari ini, hari lahirmu, dunia lebih bersinar karenamu hadir di dalamnya.
-        </p>
+        <div class="gold-rule"></div>
+        <p>Ama, ada keindahan dalam dirimu yang tidak bisa diukur oleh waktu.
+           Setiap senyummu adalah cahaya, setiap langkahmu adalah inspirasi.
+           Hari ini, hari lahirmu, dunia lebih bersinar karenamu hadir di dalamnya.</p>
       </div>
     </div>
   </section>
 
-  <!-- SLIDE 3 — WISHES (DARK) -->
+  <!-- SLIDE 3 — WISHES -->
   <section class="slide slide-3" data-index="2">
-    <div class="slide-3-inner">
-      <p class="roman-num">XLIV</p>
-      <blockquote>
-        "Semoga setiap hari yang Ama jalani<br>
-        dipenuhi dengan <strong>kasih sayang</strong>,<br>
-        <strong>kesehatan</strong>, dan <strong>ketenangan jiwa</strong>."
+    <div class="s3-particles" id="particles"></div>
+    <div class="s3-inner stagger">
+      <p class="s3-title-large">Do'a Kami</p>
+      <blockquote class="s3-quote">
+        "Semoga setiap hari yang Ama jalani dipenuhi dengan
+        <strong>kasih sayang</strong>, <strong>kesehatan</strong>,
+        dan <strong>ketenangan jiwa</strong>."
       </blockquote>
       <ul class="wishes-list">
-        <li>Semoga kesehatan selalu menemanimu di setiap pagi yang kamu sambut</li>
-        <li>Semoga hatimu selalu dipenuhi kebahagiaan yang tulus dan abadi</li>
-        <li>Semoga segala impian dan doamu dikabulkan satu per satu</li>
-        <li>Semoga orang-orang yang kamu cintai selalu berada di sisimu</li>
-        <li>Semoga usiamu yang baru membawa babak terindah dalam hidupmu</li>
+        <li><span class="wish-icon">✦</span>Semoga kesehatan selalu menemanimu di setiap pagi yang Ama sambut</li>
+        <li><span class="wish-icon">✦</span>Semoga hatimu selalu dipenuhi kebahagiaan yang tulus dan abadi</li>
+        <li><span class="wish-icon">✦</span>Semoga segala impian dan doamu dikabulkan satu per satu</li>
+        <li><span class="wish-icon">✦</span>Semoga orang-orang yang Ama cintai selalu berada di sisimu</li>
+        <li><span class="wish-icon">✦</span>Semoga usiamu yang baru membawa babak terindah dalam hidupmu</li>
       </ul>
     </div>
   </section>
 
-  <!-- SLIDE 4 — AGE TRIBUTE -->
+  <!-- SLIDE 4 — AGE -->
   <section class="slide slide-4" data-index="3">
-
-    <div class="slide-4-inner">
-      <div class="age-ring" id="ageRing">
-        <svg viewBox="0 0 100 100" aria-hidden="true">
+    <div class="s4-inner stagger">
+      <div class="age-orbit">
+        <svg viewBox="0 0 100 100">
           <defs>
-            <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%"   stop-color="#e8789a"/>
-              <stop offset="100%" stop-color="#c0436b"/>
+              <stop offset="50%"  stop-color="#c0436b"/>
+              <stop offset="100%" stop-color="#d4a96a"/>
             </linearGradient>
           </defs>
-          <circle class="age-track" cx="50" cy="50" r="42"/>
-          <circle class="age-fill"  cx="50" cy="50" r="42" id="agePath"/>
+          <circle class="ring-glow"  cx="50" cy="50" r="42"/>
+          <circle class="ring-track" cx="50" cy="50" r="42"/>
+          <circle class="ring-fill"  cx="50" cy="50" r="42" id="ringPath"/>
         </svg>
-        <div class="age-center">
-          <span class="num">44</span>
-          <span class="label">Tahun</span>
+        <div class="age-center-text">
+          <span class="age-num">44</span>
+          <span class="age-unit">Tahun</span>
         </div>
       </div>
-
       <h2>44 tahun<br><em>yang begitu bermakna</em></h2>
-      <p>
-        44 tahun bukan sekadar angka — itu adalah 44 tahun keberanian,
-        44 tahun cinta yang diberikan tanpa syarat, 44 tahun menjadi
-        perempuan yang kuat dan penuh kasih. Ama, kamu adalah hadiah
-        terbaik yang pernah ada di hidup kami.
-      </p>
+      <p>44 tahun bukan sekadar angka — itu adalah 44 tahun keberanian,
+         cinta yang diberikan tanpa syarat, dan menjadi perempuan yang kuat
+         serta penuh kasih. Ama, kamu adalah hadiah terbaik yang pernah ada di hidup kami.</p>
+      <div class="s4-chips">
+        <span class="chip">🌹 44 Tahun Bersinar</span>
+        <span class="chip">💪 Perempuan Tangguh</span>
+        <span class="chip">✨ Penuh Berkah</span>
+        <span class="chip">🌸 Dicintai Selamanya</span>
+      </div>
     </div>
   </section>
 
   <!-- SLIDE 5 — CLOSING -->
   <section class="slide slide-5" data-index="4">
-    <div class="slide-5-inner">
-      <span class="heart-anim">💕</span>
-      <h2>Ama,<br><strong>kamu selalu dicintai</strong><br>lebih dari kata-kata</h2>
-      <p>
-        Tidak ada ucapan yang cukup untuk menggambarkan betapa berarti dirimu.
-        Di hari spesial ini, kami hanya ingin kamu tahu — bahwa setiap doa kami
-        selalu menyebut namamu, setiap harapan kami termasuk kebahagiaanmu.
-        Selamat ulang tahun yang ke-44, Ama tersayang.
-        Semoga Tuhan selalu menjagamu. 🌸
-      </p>
-      <div class="sender-tag">
-        dibuat dengan cinta oleh &nbsp;<em>Niyah</em>&nbsp; ✨
+    <div class="s5-glow g1"></div>
+    <div class="s5-glow g2"></div>
+    <div id="roses-container"></div>
+    <div class="s5-inner stagger">
+      <div class="heart-ring">
+        <span class="heart-emoji">💕</span>
       </div>
+      <h2>Ama,<br><strong>kamu selalu dicintai</strong><br>lebih dari kata-kata</h2>
+      <p>Tidak ada ucapan yang cukup untuk menggambarkan betapa berarti dirimu.
+         Di hari spesial ini, kami hanya ingin Ama tahu — bahwa setiap doa kami
+         selalu menyebut namamu, setiap harapan kami termasuk kebahagiaanmu.
+         Selamat ulang tahun yang ke-44, Ama tersayang.
+         Semoga Allah Subhanahu Wa Ta'ala selalu menjagamu. 🌸</p>
+      <div class="s5-divider"></div>
+      <p class="sender-tag">dibuat dengan cinta oleh &nbsp;<em>Hasniyah Syamilah</em>&nbsp; ✨</p>
     </div>
   </section>
 
-</div><!-- /.slides-wrapper -->
+</div>
 
-<!-- ========================
-     SCRIPTS
-======================== -->
+<!-- ════════════════════════════════════
+     SCRIPT
+════════════════════════════════════ -->
 <script>
-  /* ── SLIDESHOW ── */
-  const slides  = Array.from(document.querySelectorAll('.slide'));
-  const dots    = Array.from(document.querySelectorAll('.dot'));
-  let current   = 0;
-  let animating = false;
+/* ══════════════════════════════════════
+   GIFT BOX OPEN SEQUENCE
+══════════════════════════════════════ */
+const giftScreen  = document.getElementById('gift-screen');
+const giftBoxWrap = document.getElementById('giftBoxWrap');
+const giftLid     = document.getElementById('giftLid');
+const navUI       = document.getElementById('nav-ui');
+let giftOpened    = false;
 
-  function goTo(idx, direction = 'forward') {
-    if (animating || idx === current || idx < 0 || idx >= slides.length) return;
-    animating = true;
+giftBoxWrap.addEventListener('click', openGift);
+giftBoxWrap.addEventListener('touchend', e => { e.preventDefault(); openGift(); });
 
-    const from = slides[current];
-    const to   = slides[idx];
+function openGift() {
+  if (giftOpened) return;
+  giftOpened = true;
 
-    from.classList.remove('active');
-    to.classList.add('active');
+  // 1. Stop box floating
+  giftBoxWrap.style.animation = 'none';
 
-    if (direction === 'forward') {
-      from.classList.add('leaving');
-      to.classList.add('entering');
-    } else {
-      from.classList.add('leaving-forward');
-      to.classList.add('entering-back');
-    }
+  // 2. Lid flips open
+  giftScreen.classList.add('opening');
 
-    const cleanup = () => {
-      from.classList.remove('leaving', 'leaving-forward');
-      to.classList.remove('entering', 'entering-back');
-      animating = false;
-      // ring animation trigger
-      if (idx === 3) animateRing();
-    };
+  // 3. Burst confetti particles from center of box
+  spawnBurst();
 
-    setTimeout(cleanup, 900);
+  // 4. After lid flies off → do the big curtain-reveal into slide 1
+  setTimeout(() => {
+    doCurtainReveal();
+  }, 600);
+}
 
-    dots[current].classList.remove('active');
-    current = idx;
-    dots[current].classList.add('active');
-  }
+function spawnBurst() {
+  const rect   = giftBoxWrap.getBoundingClientRect();
+  const cx     = rect.left + rect.width  / 2;
+  const cy     = rect.top  + rect.height * 0.3;
+  const colors = ['#f9c6d3','#e8789a','#c0436b','#d4a96a','#fff0f5','#ffb3d0','#f5e6b0'];
+  const emojis = ['🌸','✨','💕','🌹','⭐','💛','🎊'];
 
-  document.getElementById('next').addEventListener('click', () => goTo(current + 1, 'forward'));
-  document.getElementById('prev').addEventListener('click', () => goTo(current - 1, 'back'));
-
-  dots.forEach(d => {
-    d.addEventListener('click', () => {
-      const idx = +d.dataset.i;
-      goTo(idx, idx > current ? 'forward' : 'back');
+  // Coloured circles
+  for (let i = 0; i < 28; i++) {
+    const el  = document.createElement('div');
+    el.className = 'burst-particle';
+    const angle  = Math.random() * Math.PI * 2;
+    const dist   = 80 + Math.random() * 220;
+    const tx     = Math.cos(angle) * dist;
+    const ty     = Math.sin(angle) * dist - 60;
+    const sz     = 6 + Math.random() * 12;
+    const dur    = 0.6 + Math.random() * 0.7;
+    const color  = colors[Math.floor(Math.random() * colors.length)];
+    Object.assign(el.style, {
+      left:   cx + 'px', top: cy + 'px',
+      width:  sz + 'px', height: sz + 'px',
+      background: color,
+      '--tx': tx + 'px', '--ty': ty + 'px',
+      '--dur': dur + 's',
+      '--ease': 'cubic-bezier(0.25,0.46,0.45,0.94)',
+      marginLeft: (-sz/2) + 'px', marginTop: (-sz/2) + 'px',
+      boxShadow: `0 0 ${sz}px ${color}`,
     });
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), dur * 1000 + 100);
+  }
+
+  // Emoji burst
+  for (let i = 0; i < 10; i++) {
+    const el  = document.createElement('div');
+    el.style.cssText = `position:fixed;pointer-events:none;z-index:8600;font-size:${1.2+Math.random()*1.4}rem;`;
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    const angle  = -Math.PI*0.7 + Math.random() * Math.PI * 1.4;
+    const dist   = 100 + Math.random() * 200;
+    const tx     = Math.cos(angle) * dist;
+    const ty     = Math.sin(angle) * dist - 80;
+    const dur    = 0.7 + Math.random() * 0.6;
+    Object.assign(el.style, {
+      left: cx + 'px', top: cy + 'px',
+      transition: `transform ${dur}s cubic-bezier(0.25,0.46,0.45,0.94), opacity ${dur}s`,
+      opacity: '1',
+    });
+    document.body.appendChild(el);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        el.style.transform = `translate(${tx}px, ${ty}px) rotate(${(Math.random()-0.5)*180}deg) scale(0.2)`;
+        el.style.opacity   = '0';
+      });
+    });
+    setTimeout(() => el.remove(), dur * 1000 + 100);
+  }
+}
+
+/* ── CURTAIN REVEAL (gift → slide 1) ── */
+function doCurtainReveal() {
+  const panels = Array.from(document.querySelectorAll('.curtain-panel'));
+  const col    = '#c0436b';
+
+  // Close curtains down over gift screen
+  panels.forEach((p, i) => {
+    p.style.background     = col;
+    p.style.transformOrigin = 'top center';
+    p.style.transform      = 'scaleY(0)';
+    p.style.transition     = `transform 0.5s cubic-bezier(0.87,0,0.13,1) ${i*55}ms`;
+    void p.offsetWidth;
+    p.style.transform = 'scaleY(1)';
   });
 
-  // Keyboard navigation
-  document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1, 'forward');
-    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(current - 1, 'back');
+  // Mid-point: fade gift screen, show slides
+  setTimeout(() => {
+    giftScreen.classList.add('fade-out');
+    setTimeout(() => {
+      giftScreen.style.display = 'none';
+    }, 600);
+    navUI.classList.add('visible');
+    // Trigger slide 1 stagger
+    void document.querySelector('.slide-1').offsetWidth;
+  }, 480);
+
+  // Open curtains upward → reveal slide 1
+  setTimeout(() => {
+    panels.forEach((p, i) => {
+      p.style.transformOrigin = 'bottom center';
+      p.style.transition = `transform 0.58s cubic-bezier(0.87,0,0.13,1) ${(panels.length-1-i)*55}ms`;
+      p.style.transform  = 'scaleY(0)';
+    });
+  }, 600);
+}
+
+/* ══════════════════════════════════════
+   SLIDESHOW ENGINE
+══════════════════════════════════════ */
+const slides   = Array.from(document.querySelectorAll('.slide'));
+const dots     = Array.from(document.querySelectorAll('.dot'));
+const overlay  = document.getElementById('transition-overlay');
+const curtainEl= document.getElementById('curtain');
+const panels   = Array.from(curtainEl.querySelectorAll('.curtain-panel'));
+const ctrCur   = document.getElementById('ctr-cur');
+let current    = 0;
+let animating  = false;
+const DUR      = 750;
+
+function pad(n) { return String(n + 1).padStart(2, '0'); }
+
+function doRipple(fromSlide, toSlide, color, cb) {
+  const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+  const maxR = Math.hypot(cx, cy) * 2.2;
+  const el = document.createElement('div');
+  el.className = 'ripple-circle';
+  Object.assign(el.style, {
+    width: maxR*2+'px', height: maxR*2+'px',
+    left: (cx-maxR)+'px', top: (cy-maxR)+'px',
+    background: color, transform: 'scale(0)',
+    transition: `transform ${DUR}ms cubic-bezier(0.4,0,0.2,1)`,
   });
+  overlay.appendChild(el);
+  requestAnimationFrame(() => requestAnimationFrame(() => { el.style.transform = 'scale(1)'; }));
 
-  // Touch / swipe
-  let touchX = null;
-  document.addEventListener('touchstart', e => { touchX = e.changedTouches[0].clientX; });
-  document.addEventListener('touchend',   e => {
-    if (touchX === null) return;
-    const dx = e.changedTouches[0].clientX - touchX;
-    if (Math.abs(dx) > 50) {
-      dx < 0 ? goTo(current + 1, 'forward') : goTo(current - 1, 'back');
-    }
-    touchX = null;
+  setTimeout(() => {
+    fromSlide.classList.remove('active');
+    toSlide.classList.add('active');
+    void toSlide.offsetWidth;
+  }, DUR * 0.55);
+
+  setTimeout(() => {
+    el.style.transition = `transform ${DUR*0.9}ms cubic-bezier(0.4,0,0.2,1)`;
+    el.style.transformOrigin = '50% 50%';
+    el.style.transform = 'scale(0)';
+    setTimeout(() => { el.remove(); cb && cb(); }, DUR * 0.9);
+  }, DUR * 0.6);
+}
+
+function doCurtain(fromSlide, toSlide, color, cb) {
+  panels.forEach((p, i) => {
+    p.style.background     = color;
+    p.style.transition     = `transform ${DUR*0.55}ms cubic-bezier(0.87,0,0.13,1) ${i*40}ms`;
+    p.style.transformOrigin = 'top center';
+    p.style.transform      = 'scaleY(0)';
+    void p.offsetWidth;
+    p.style.transform = 'scaleY(1)';
   });
+  setTimeout(() => {
+    fromSlide.classList.remove('active');
+    toSlide.classList.add('active');
+    void toSlide.offsetWidth;
+  }, DUR * 0.45);
+  setTimeout(() => {
+    panels.forEach((p, i) => {
+      p.style.transition = `transform ${DUR*0.5}ms cubic-bezier(0.87,0,0.13,1) ${(panels.length-1-i)*45}ms`;
+      p.style.transformOrigin = 'bottom center';
+      p.style.transform = 'scaleY(0)';
+    });
+    setTimeout(cb, DUR * 0.55);
+  }, DUR * 0.55);
+}
 
-  /* ── AGE RING ── */
-  function animateRing() {
-    const path = document.getElementById('agePath');
-    const r    = 42;
-    const circ = 2 * Math.PI * r;
-    const pct  = 44 / 100;
-    path.style.strokeDasharray = `${circ * pct} ${circ}`;
+function getEffect(from, to) {
+  const rippleMap  = {'0-1':'#f9c6d3','2-3':'#3d1228','3-4':'#c0436b','4-0':'#fff0f5'};
+  const curtainMap = {'1-2':'#e8789a','3-2':'#3d1228'};
+  const key = `${from}-${to}`;
+  if (rippleMap[key])  return { type: 'ripple',  color: rippleMap[key] };
+  if (curtainMap[key]) return { type: 'curtain', color: curtainMap[key] };
+  return to > from ? { type: 'ripple', color: '#f9c6d3' } : { type: 'curtain', color: '#c0436b' };
+}
+
+function goTo(idx) {
+  if (animating || idx === current || idx < 0 || idx >= slides.length) return;
+  animating = true;
+  const effect = getEffect(current, idx);
+  dots[current].classList.remove('active');
+  dots[idx].classList.add('active');
+  ctrCur.textContent = pad(idx);
+  const done = () => { current = idx; animating = false; if (idx === 3) animateRing(); };
+  effect.type === 'ripple'
+    ? doRipple(slides[current], slides[idx], effect.color, done)
+    : doCurtain(slides[current], slides[idx], effect.color, done);
+}
+
+document.getElementById('next').addEventListener('click', () => goTo(current + 1));
+document.getElementById('prev').addEventListener('click', () => goTo(current - 1));
+dots.forEach(d => d.addEventListener('click', () => goTo(+d.dataset.i)));
+
+document.addEventListener('keydown', e => {
+  if (e.key==='ArrowRight'||e.key==='ArrowDown') goTo(current+1);
+  if (e.key==='ArrowLeft' ||e.key==='ArrowUp')   goTo(current-1);
+});
+
+let touchX=null, touchY=null;
+document.addEventListener('touchstart', e=>{touchX=e.changedTouches[0].clientX;touchY=e.changedTouches[0].clientY;});
+document.addEventListener('touchend',   e=>{
+  if(touchX===null)return;
+  const dx=e.changedTouches[0].clientX-touchX;
+  const dy=e.changedTouches[0].clientY-touchY;
+  if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>45){dx<0?goTo(current+1):goTo(current-1);}
+  touchX=touchY=null;
+});
+
+/* ══════════════════════════════════════
+   AGE RING
+══════════════════════════════════════ */
+function animateRing() {
+  const path = document.getElementById('ringPath');
+  const circ = 2 * Math.PI * 42;
+  path.style.strokeDasharray = `${circ * 0.44} ${circ}`;
+}
+
+/* ══════════════════════════════════════
+   PETALS
+══════════════════════════════════════ */
+const canvas = document.getElementById('petal-canvas');
+const ctx    = canvas.getContext('2d');
+function resize(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
+resize(); window.addEventListener('resize', resize);
+
+const PCOLS = ['rgba(232,120,154,0.5)','rgba(249,198,211,0.55)','rgba(192,67,107,0.4)','rgba(255,230,240,0.6)','rgba(212,169,106,0.38)'];
+class Petal {
+  constructor(){ this.reset(true); }
+  reset(init=false){
+    this.x=Math.random()*canvas.width; this.y=init?Math.random()*-canvas.height:-20;
+    this.sz=4+Math.random()*9; this.vx=(Math.random()-0.5)*0.5; this.vy=0.55+Math.random()*0.9;
+    this.rot=Math.random()*Math.PI*2; this.drot=(Math.random()-0.5)*0.025;
+    this.wobble=Math.random()*Math.PI*2; this.wSpd=0.018+Math.random()*0.012;
+    this.color=PCOLS[Math.floor(Math.random()*PCOLS.length)];
+    this.type=Math.floor(Math.random()*3);
   }
-
-  /* ── FALLING PETALS ── */
-  const canvas = document.getElementById('petal-canvas');
-  const ctx    = canvas.getContext('2d');
-
-  function resize() {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
+  update(){
+    this.wobble+=this.wSpd; this.x+=this.vx+Math.sin(this.wobble)*0.6;
+    this.y+=this.vy; this.rot+=this.drot;
+    if(this.y>canvas.height+25) this.reset();
   }
-  resize();
-  window.addEventListener('resize', resize);
-
-  const COLORS = [
-    'rgba(232,120,154,0.55)',
-    'rgba(249,198,211,0.6)',
-    'rgba(192, 67,107,0.45)',
-    'rgba(255,230,240,0.65)',
-    'rgba(212,169,106,0.4)',
-  ];
-
-  class Petal {
-    constructor() { this.reset(true); }
-
-    reset(init = false) {
-      this.x    = Math.random() * canvas.width;
-      this.y    = init ? Math.random() * -canvas.height : -20;
-      this.size = 5 + Math.random() * 9;
-      this.speed= 0.6 + Math.random() * 0.8;
-      this.wind = (Math.random() - 0.5) * 0.4;
-      this.rot  = Math.random() * Math.PI * 2;
-      this.drot = (Math.random() - 0.5) * 0.03;
-      this.color= COLORS[Math.floor(Math.random() * COLORS.length)];
-      this.wobble = Math.random() * Math.PI * 2;
-      this.wobbleSpeed = 0.02 + Math.random() * 0.015;
+  draw(){
+    ctx.save(); ctx.translate(this.x,this.y); ctx.rotate(this.rot);
+    ctx.fillStyle=this.color; ctx.beginPath();
+    if(this.type===1){
+      ctx.moveTo(0,-this.sz);
+      ctx.bezierCurveTo(this.sz*0.6,-this.sz*0.5,this.sz*0.6,this.sz*0.5,0,this.sz);
+      ctx.bezierCurveTo(-this.sz*0.6,this.sz*0.5,-this.sz*0.6,-this.sz*0.5,0,-this.sz);
+    } else if(this.type===2){
+      ctx.arc(0,0,this.sz*0.5,0,Math.PI*2);
+    } else {
+      ctx.ellipse(0,0,this.sz*0.38,this.sz,0,0,Math.PI*2);
     }
-
-    update() {
-      this.wobble += this.wobbleSpeed;
-      this.x += this.wind + Math.sin(this.wobble) * 0.5;
-      this.y += this.speed;
-      this.rot += this.drot;
-      if (this.y > canvas.height + 20) this.reset();
-    }
-
-    draw() {
-      ctx.save();
-      ctx.translate(this.x, this.y);
-      ctx.rotate(this.rot);
-      ctx.fillStyle = this.color;
-      ctx.beginPath();
-      // simple petal shape
-      ctx.ellipse(0, 0, this.size * 0.45, this.size, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    }
+    ctx.fill(); ctx.restore();
   }
+}
+const petals = Array.from({length:45}, ()=>new Petal());
+function loop(){ ctx.clearRect(0,0,canvas.width,canvas.height); petals.forEach(p=>{p.update();p.draw();}); requestAnimationFrame(loop); }
+loop();
 
-  const petals = Array.from({ length: 40 }, () => new Petal());
+/* ══════════════════════════════════════
+   SLIDE 3 PARTICLES
+══════════════════════════════════════ */
+const pCont = document.getElementById('particles');
+for(let i=0;i<22;i++){
+  const p=document.createElement('div'); p.className='s3-particle';
+  const x=Math.random()*100, del=Math.random()*12, dur=8+Math.random()*14, sz=1.5+Math.random()*2.5;
+  Object.assign(p.style,{left:x+'%',bottom:'-10px',width:sz+'px',height:sz+'px',animationDuration:dur+'s',animationDelay:del+'s'});
+  pCont.appendChild(p);
+}
 
-  function loop() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    petals.forEach(p => { p.update(); p.draw(); });
-    requestAnimationFrame(loop);
-  }
-  loop();
+/* ══════════════════════════════════════
+   SLIDE 5 FLOATING ROSES
+══════════════════════════════════════ */
+const roseEmojis=['🌹','🌸','💮','🌺'];
+const rc=document.getElementById('roses-container');
+for(let i=0;i<12;i++){
+  const r=document.createElement('div'); r.className='rose-float';
+  r.textContent=roseEmojis[i%roseEmojis.length];
+  const x=5+Math.random()*90, del=Math.random()*10, dur=12+Math.random()*12;
+  Object.assign(r.style,{left:x+'%',animationDuration:dur+'s',animationDelay:del+'s',fontSize:(1+Math.random()*1.2)+'rem'});
+  rc.appendChild(r);
+}
 </script>
-
 </body>
 </html>
