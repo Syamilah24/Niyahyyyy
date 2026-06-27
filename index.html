@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selamat Ulang Tahun Ama! 🎉</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ffe6e6, #ffb3d9);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            text-align: center;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            max-width: 85%;
+            animation: popIn 1s ease-out;
+        }
+        h1 { color: #ff4d94; font-size: 2.5rem; margin-bottom: 10px; }
+        p { color: #555; font-size: 1.1rem; line-height: 1.6; }
+        .heart { color: #ff4d94; font-size: 3rem; animation: heartbeat 1.2s infinite; margin-bottom: 15px; }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 20%, 60% { transform: scale(1.1); } 40% { transform: scale(1.05); } }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="heart">❤️</div>
+        <h1>Selamat Ulang Tahun, Ama! 🎉</h1>
+        <p>Semoga di usia yang baru ini, Ama selalu diberikan kesehatan, kebahagiaan, dan kemudahan dalam segala urusan. Tetap jadi orang yang luar biasa ya!</p>
+        <p style="font-size: 0.9rem; color: #888; margin-top: 20px;">Dibuat dengan senyuman oleh Niyah ✨</p>
+    </div>
+</body>
+</html>
